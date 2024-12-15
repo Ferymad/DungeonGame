@@ -15,3 +15,4 @@ class Camera:
         else:
             x, y = rect
             return (x - self.x, y - self.y)
+import pygame
