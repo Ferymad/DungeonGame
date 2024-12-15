@@ -1,4 +1,5 @@
 import pygame
+from src.combat.attack import MeleeAttack
 
 class Character:
     def __init__(self, x, y, width, height, speed):
