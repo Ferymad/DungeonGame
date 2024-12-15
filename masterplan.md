@@ -61,20 +61,25 @@
 ## II. Core Game Mechanics
 
 ### A. Procedural Generation
-1.  **Implement a basic room generation algorithm** in `src/map/generator.py`.
+1.  **Implement a room generation algorithm using Binary Space Partitioning (BSP)** in `src/map/generator.py`.
 2.  **Create a tile class** in `src/map/tile.py` to represent map tiles.
-3.  **Implement pathway generation** to connect rooms.
+3.  **Implement corridor generation** to connect rooms, ensuring no dead ends.
 4.  **Add treasure and boss room generation logic.**
 5.  **Implement dynamic difficulty scaling** based on player progression.
+6.  **Set minimum and maximum room sizes.**
+7.  **Set minimum and maximum number of rooms.**
+8.  **Set a maximum map size.**
 
 ### B. Combat System
 1.  **Create a combat system class** in `src/combat/combat_system.py`.
-2.  **Implement basic melee attack logic** in `src/combat/attack.py`.
-3.  **Implement ranged projectile logic.**
-4.  **Implement magic spell logic.**
-5.  **Add status effect system.**
-6.  **Implement critical hit mechanics.**
-7.  **Add dodge and block abilities.**
+2.  **Implement melee attack logic using hitboxes and collision detection** in `src/combat/attack.py`.
+3.  **Implement ranged projectile logic with speed, trajectory, and collision detection.**
+4.  **Implement magic spell logic using mana and spell effects.**
+5.  **Add a cooldown system for attacks.**
+6.  **Add a damage calculation system.**
+7.  **Add status effect system.**
+8.  **Implement critical hit mechanics.**
+9.  **Add dodge and block abilities.**
 
 ## III. Player Character
 
@@ -88,19 +93,23 @@
 1.  **Add health, mana, stamina, and experience points** to the character class.
 
 ### C. Progression
-1.  **Implement a basic skill tree** in `src/entities/player.py`.
+1.  **Implement a skill tree with branching paths** in `src/entities/player.py`.
 2.  **Implement level-up system.**
-3.  **Add attribute point allocation logic.**
+3.  **Add attribute point allocation logic with a limit.**
+4.  **Add a way to reset skill points.**
 
 ## IV. Inventory and Equipment
 
 ### A. Loot System
 1.  **Implement item drop logic** in `src/items/item.py`.
-2.  **Implement rarity tiers.**
+2.  **Implement rarity tiers that affect item stats.**
 
 ### B. Equipment
 1.  **Add weapon, armor, and accessory slots** to the character class.
 2.  **Implement visual upgrades based on equipment.**
+3.  **Implement equipment that affects player stats.**
+4.  **Add a way to compare items.**
+5.  **Add a way to sort items.**
 
 ### C. Crafting
 1.  **Implement basic crafting mechanics** in `src/items/inventory.py`.
@@ -111,9 +120,9 @@
 
 ### A. Enemy Types
 1.  **Create a base enemy class** in `src/entities/enemy.py`.
-2.  **Implement diverse enemy behaviors.**
+2.  **Implement diverse enemy behaviors, such as patrolling and chasing.**
 3.  **Add pixel-art enemy sprites.**
-4.  **Implement adaptive AI pathfinding.**
+4.  **Implement A\* pathfinding for enemy movement.**
 5.  **Implement boss encounters.**
 
 ### B. Enemy Mechanics
@@ -125,8 +134,8 @@
 
 ### A. Code Quality
 1.  **Follow modular, object-oriented design principles.**
-2.  **Use efficient algorithms.**
-3.  **Optimize for performance.**
+2.  **Use efficient algorithms, such as A\* for pathfinding and spatial partitioning for collision detection.**
+3.  **Optimize for performance using techniques like sprite batching and culling.**
 4.  **Ensure cross-platform compatibility.**
 
 ### B. Game Management
@@ -137,13 +146,13 @@
 ## VII. Bonus Features
 
 ### A. Visuals and Audio
-1.  **Add animated pixel-art graphics.**
+1.  **Add animated pixel-art graphics using sprite sheets and animation classes.**
 2.  **Implement background music.**
 3.  **Add sound effects.**
 
 ### B. Additional Features
-1.  **Implement achievement system.**
-2.  **Add mini-map.**
+1.  **Implement an achievement system with tracking and display.**
+2.  **Add a mini-map that is generated and displayed.**
 3.  **Implement difficulty settings.**
 
 ## VIII. Development Tools
@@ -165,9 +174,33 @@
 
 ### Phase 1: Core Mechanics
 -   Project setup, basic game loop, procedural generation, basic combat.
+    -   Create project structure.
+    -   Create basic Pygame window.
+    -   Implement basic game loop.
+    -   Create settings file.
+    -   Implement BSP room generation.
+    -   Implement corridor generation.
+    -   Implement basic melee combat.
 ### Phase 2: Player and Enemies
 -   Player classes, attributes, progression, basic enemy AI.
+    -   Create base character class.
+    -   Implement Warrior, Archer, and Mage classes.
+    -   Add health, mana, stamina, and experience points.
+    -   Implement skill tree.
+    -   Implement level-up system.
+    -   Implement basic enemy AI.
 ### Phase 3: Inventory and Equipment
 -   Loot system, equipment, basic crafting.
+    -   Implement item drop logic.
+    -   Implement rarity tiers.
+    -   Add equipment slots.
+    -   Implement basic crafting.
 ### Phase 4: Polish and Features
 -   Bonus features, performance optimization, bug fixing.
+    -   Add animated pixel-art graphics.
+    -   Implement background music and sound effects.
+    -   Implement achievement system.
+    -   Add mini-map.
+    -   Implement difficulty settings.
+    -   Optimize performance.
+    -   Fix bugs.
