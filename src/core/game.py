@@ -25,8 +25,16 @@ class Game:
     def update(self):
         pass
 
+    def test_map_generation(self):
+        from src.map.generator import MapGenerator
+        generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10)
+        rooms = generator.generate_map()
+        for room in rooms:
+            pygame.draw.rect(self.screen, (255, 255, 255), (room.x, room.y, room.width, room.height), 1)
+
     def render(self):
         self.screen.fill(settings.BG_COLOR)
+        self.test_map_generation()
         pygame.display.flip()
 
     def quit(self):
