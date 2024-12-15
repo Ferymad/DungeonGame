@@ -89,6 +89,14 @@ class Character:
             attack_height = self.height
             self.last_attack_time = current_time
             return MeleeAttack(self, attack_x, attack_y, attack_width, attack_height, 10)
+    def cast_spell(self, mouse_pos):
+        """Casts a spell."""
+        from src.combat.spell import ProjectileSpell
+        spell = ProjectileSpell("Fireball", 20, 5, 10, 16, 16)
+        if self.current_mana >= spell.mana_cost:
+            self.use_mana(spell.mana_cost)
+            projectile = spell.cast(self, self.x + self.width // 2, self.y + self.height // 2, mouse_pos[0], mouse_pos[1])
+            return projectile
         return None
 
 

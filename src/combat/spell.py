@@ -31,4 +31,5 @@ class ProjectileSpell(Spell):
         velocity_x *= self.projectile_speed
         velocity_y *= self.projectile_speed
         projectile = Projectile(caster, x, y, velocity_x, velocity_y, self.projectile_width, self.projectile_height, self.projectile_damage)
+        projectile = Projectile(caster, x, y, velocity_x, velocity_y, self.projectile_width, self.projectile_height, self.projectile_damage)
         return projectile

@@ -20,6 +20,7 @@ class Game:
         self.tiles = []
         self.enemies = []
         self.attacks = []
+        self.projectiles = []
 
     def run(self):
         while self.running:
@@ -45,12 +46,29 @@ class Game:
         if attack:
             self.attacks.append(attack)
 
+        # Handle player spells
+        projectile = self.player.cast_spell(pygame.mouse.get_pos())
+        if projectile:
+            self.projectiles.append(projectile)
+
+        # Update projectiles
+        for projectile in self.projectiles:
+            projectile.update()
+
         # Check for attack collisions
         for attack in self.attacks:
             for enemy in self.enemies:
                 if attack.check_collision(enemy.hitbox):
                     enemy.take_damage(attack.damage)
                     self.attacks.remove(attack)
+                    break
+
+        # Check for projectile collisions
+        for projectile in self.projectiles:
+            for enemy in self.enemies:
+                if projectile.check_collision(enemy.hitbox):
+                    enemy.take_damage(projectile.damage)
+                    self.projectiles.remove(projectile)
                     break
 
         # Remove dead enemies
@@ -89,6 +107,8 @@ class Game:
             pygame.draw.rect(self.screen, (255, 0, 0), self.camera.apply(enemy.hitbox))
         for attack in self.attacks:
             pygame.draw.rect(self.screen, (255, 255, 0), self.camera.apply(attack.hitbox))
+        for projectile in self.projectiles:
+            pygame.draw.rect(self.screen, (0, 255, 255), self.camera.apply(projectile.hitbox))
         pygame.display.flip()
 
     def quit(self):
