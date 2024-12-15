@@ -56,3 +56,20 @@ class MapGenerator:
         for tile_x in range(room.x, room.x + room.width):
             for tile_y in range(room.y, room.y + room.height):
                 self.tiles.append(Tile(tile_x, tile_y, "floor"))
+
+    def _create_corridors(self):
+        for i in range(len(self.rooms) - 1):
+            room1 = self.rooms[i]
+            room2 = self.rooms[i+1]
+            self._create_corridor(room1, room2)
+
+    def _create_corridor(self, room1, room2):
+        x1, y1 = room1.center_x, room1.center_y
+        x2, y2 = room2.center_x, room2.center_y
+
+        while x1 != x2:
+            x1 += 1 if x1 < x2 else -1
+            self.tiles.append(Tile(x1, y1, "floor"))
+        while y1 != y2:
+            y1 += 1 if y1 < y2 else -1
+            self.tiles.append(Tile(x1, y1, "floor"))
