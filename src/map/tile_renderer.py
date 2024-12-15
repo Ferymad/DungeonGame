@@ -8,12 +8,29 @@ class TileRenderer:
             "treasure": pygame.Surface((16, 16)),
             "boss": pygame.Surface((16, 16)),
         }
-        self.tile_images["floor"].fill((200, 200, 200))
-        self.tile_images["treasure"].fill((0, 255, 0))
-        self.tile_images["boss"].fill((255, 0, 0))
+    import pygame
+    import os
 
-    def render(self, screen, tiles, camera):
-        for tile in tiles:
-            image = self.tile_images.get(tile.type)
-            if image:
-                screen.blit(image, camera.apply((tile.x * 16, tile.y * 16)))
+    class TileRenderer:
+        def __init__(self):
+            self.tile_images = {
+                "floor": self.load_image("floor.png"),
+                "treasure": self.load_image("treasure.png"),
+                "boss": self.load_image("boss.png"),
+            }
+
+        def load_image(self, filename):
+            """Loads an image from the assets/tiles directory."""
+            filepath = os.path.join("src", "assets", "tiles", filename)
+            try:
+                image = pygame.image.load(filepath)
+                return image
+            except pygame.error as e:
+                print(f"Error loading image {filename}: {e}")
+                return None
+
+        def render(self, screen, tiles, camera):
+            for tile in tiles:
+                image = self.tile_images.get(tile.type)
+                if image:
+                    screen.blit(image, camera.apply((tile.x * 16, tile.y * 16)))

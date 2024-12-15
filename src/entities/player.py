@@ -16,6 +16,21 @@ class Character:
         self.current_stamina = self.max_stamina
         self.experience = 0
 
+    def handle_input(self, event, tiles):
+        """Handles keyboard input and updates character position."""
+        dx = 0
+        dy = 0
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                dx = -1
+            if event.key == pygame.K_RIGHT:
+                dx = 1
+            if event.key == pygame.K_UP:
+                dy = -1
+            if event.key == pygame.K_DOWN:
+                dy = 1
+        self.move(dx, dy, tiles)
+
     def move(self, dx, dy, tiles):
         """Moves the character by dx and dy, checking for collisions."""
         new_x = self.x + dx * self.speed
@@ -33,10 +48,10 @@ class Character:
         for tile in tiles:
             if tile.type != "floor":
                 continue
-            tile_rect = pygame.Rect(tile.x, tile.y, 1, 1)
+            tile_rect = pygame.Rect(tile.x * 16, tile.y * 16, 16, 16) # Assuming tile size is 16x16
             if rect.colliderect(tile_rect):
-                return False
-        return True
+                return True
+        return False
 
     def get_hitbox(self):
         """Returns the character's hitbox."""

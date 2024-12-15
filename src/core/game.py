@@ -28,15 +28,7 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.player.move(-1, 0, self.tiles)
-                if event.key == pygame.K_RIGHT:
-                    self.player.move(1, 0, self.tiles)
-                if event.key == pygame.K_UP:
-                    self.player.move(0, -1, self.tiles)
-                if event.key == pygame.K_DOWN:
-                    self.player.move(0, 1, self.tiles)
+            self.player.handle_input(event, self.tiles)
 
     def update(self):
         self.camera.update(self.player.x, self.player.y)
