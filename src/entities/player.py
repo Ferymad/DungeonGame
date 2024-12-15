@@ -36,6 +36,9 @@ class Warrior:
     def cast_spell(self, target_position):
         if self.spells:
             return self.spells.pop(0)
+    def cast_spell(self, target_position):
+        if self.spells:
+            return self.spells.pop(0)
         return None
 
     def take_damage(self, damage):
