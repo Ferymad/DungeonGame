@@ -19,3 +19,19 @@ class Character:
     def get_hitbox(self):
         """Returns the character's hitbox."""
         return self.hitbox
+
+
+class Warrior(Character):
+    def __init__(self, x, y, width, height, speed):
+        super().__init__(x, y, width, height, speed)
+        self.attack_damage = 10
+        self.defense = 5
+        self.max_health = 100
+        self.current_health = self.max_health
+
+    def take_damage(self, damage):
+        """Reduces the character's health by the damage amount."""
+        self.current_health -= damage
+        if self.current_health < 0:
+            self.current_health = 0
+        print(f"Warrior took {damage} damage. Current health: {self.current_health}")
