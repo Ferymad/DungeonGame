@@ -1,138 +1,62 @@
-import pygame
-from src.combat.attack import MeleeAttack
+from combat.attack import MeleeAttack
+from combat.spell import Fireball
+from core.settings import PLAYER_HEALTH, PLAYER_SPEED
 
-class Character:
+class Warrior:
     def __init__(self, x, y, width, height, speed):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.speed = speed
-        self.hitbox = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.max_health = 100
-        self.current_health = self.max_health
-        self.max_mana = 100
-        self.current_mana = self.max_mana
-        self.max_stamina = 100
-        self.current_stamina = self.max_stamina
-        self.experience = 0
-        self.last_attack_time = 0
-        self.attack_cooldown = 500 # milliseconds
+        self.health = PLAYER_HEALTH
+        self.attacks = []
+        self.spells = []
 
     def handle_input(self, event, tiles):
-        """Handles keyboard input and updates character position."""
-        dx = 0
-        dy = 0
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                dx = -1
-            if event.key == pygame.K_RIGHT:
-                dx = 1
-            if event.key == pygame.K_UP:
-                dy = -1
-            if event.key == pygame.K_DOWN:
-                dy = 1
             if event.key == pygame.K_SPACE:
-                self.attack()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.cast_spell(event.pos)
-        self.move(dx, dy, tiles)
+                attack = MeleeAttack(self.x, self.y, 16, 16, 10)
+                self.attacks.append(attack)
+            elif event.key == pygame.K_LCTRL:
+                spell = Fireball(self.x, self.y, 16, 16, 20)
+                self.spells.append(spell)
+
+    def attack(self):
+        if self.attacks:
+            return self.attacks.pop(0)
+        return None
+
+    def cast_spell(self, target_position):
+        if self.spells:
+            return self.spells.pop(0)
+        return None
+
+    def take_damage(self, damage):
+        self.health -= damage
+
+    @property
+    def hitbox(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
 
     def move(self, dx, dy, tiles):
-        """Moves the character by dx and dy, checking for collisions."""
         new_x = self.x + dx * self.speed
         new_y = self.y + dy * self.speed
-        new_hitbox = pygame.Rect(new_x, new_y, self.width, self.height)
 
-        if not self.check_collision(new_hitbox, tiles):
+        if not self.collides_with_tiles(new_x, self.y, tiles):
             self.x = new_x
+        if not self.collides_with_tiles(self.x, new_y, tiles):
             self.y = new_y
-            self.hitbox.x = self.x
-            self.hitbox.y = self.y
 
-    def check_collision(self, rect, tiles):
-        """Checks if the character's rectangle collides with any tile."""
+    def collides_with_tiles(self, x, y, tiles):
+        player_rect = pygame.Rect(x, y, self.width, self.height)
         for tile in tiles:
-            if tile.type != "floor":
-                continue
-            tile_rect = pygame.Rect(tile.x * 16, tile.y * 16, 16, 16) # Assuming tile size is 16x16
-            if rect.colliderect(tile_rect):
+            if tile.type != "floor" and player_rect.colliderect(tile.rect):
                 return True
         return False
 
-    def get_hitbox(self):
-        """Returns the character's hitbox."""
-        return self.hitbox
-    
-    def take_damage(self, damage):
-        """Reduces the character's health by the damage amount."""
-        self.current_health -= damage
-        if self.current_health < 0:
-            self.current_health = 0
-        print(f"{self.__class__.__name__} took {damage} damage. Current health: {self.current_health}")
-
-    def use_mana(self, mana_cost):
-        """Reduces the character's mana by the mana cost."""
-        self.current_mana -= mana_cost
-        print(f"{self.__class__.__name__} used {mana_cost} mana. Current mana: {self.current_mana}")
-
-    def gain_experience(self, amount):
-        """Increases the character's experience points."""
-        self.experience += amount
-        print(f"{self.__class__.__name__} gained {amount} experience. Total experience: {self.experience}")
-
-    def attack(self):
-        """Performs a melee attack."""
-        current_time = pygame.time.get_ticks()
-        if current_time - self.last_attack_time > self.attack_cooldown:
-            attack_x = self.x + self.width
-            attack_y = self.y
-            attack_width = 20
-            attack_height = self.height
-            self.last_attack_time = current_time
-            return MeleeAttack(self, attack_x, attack_y, attack_width, attack_height, 10)
-    def cast_spell(self, mouse_pos):
-        """Casts a spell."""
-        from src.combat.spell import ProjectileSpell
-        spell = ProjectileSpell("Fireball", 20, 5, 10, 16, 16)
-        if self.current_mana >= spell.mana_cost:
-            self.use_mana(spell.mana_cost)
-            projectile = spell.cast(self, self.x + self.width // 2, self.y + self.height // 2, mouse_pos[0], mouse_pos[1])
-            return projectile
-        return None
-
-
-class Warrior(Character):
-    def __init__(self, x, y, width, height, speed):
-        super().__init__(x, y, width, height, speed)
-        self.attack_damage = 10
-        self.defense = 5
-
-    def take_damage(self, damage):
-        """Reduces the character's health by the damage amount."""
-        self.current_health -= damage
-        if self.current_health < 0:
-            self.current_health = 0
-
-
-class Archer(Character):
-    def __init__(self, x, y, width, height, speed):
-        super().__init__(x, y, width, height, speed)
-        self.attack_damage = 8
-        self.defense = 3
-
-    def take_damage(self, damage):
-        """Reduces the character's health by the damage amount."""
-        self.current_health -= damage
-
-
-class Mage(Character):
-    def __init__(self, x, y, width, height, speed):
-        super().__init__(x, y, width, height, speed)
-        self.attack_damage = 5
-        self.defense = 2
-
-    def take_damage(self, damage):
-        """Reduces the character's health by the damage amount."""
-        self.current_health -= damage
-
+    def update(self):
+        for attack in self.attacks:
+            attack.update()
+        for spell in self.spells:
+            spell.update()
