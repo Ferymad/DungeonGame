@@ -39,7 +39,10 @@ class MapGenerator:
     def _adjust_difficulty_parameters(self):
         # Adjust map generation parameters based on difficulty level
         self.min_room_size = max(4, self.min_room_size - self.difficulty_level)
+        self.min_room_size = max(1, self.min_room_size)
         self.max_room_size = min(12, self.max_room_size + self.difficulty_level)
+        if self.min_room_size > self.max_room_size:
+            self.min_room_size = self.max_room_size
 
     def _bsp_split(self, x, y, width, height):
         if len(self.rooms) >= self.max_rooms:
