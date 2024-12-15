@@ -30,7 +30,12 @@ class Game:
         generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10)
         tiles = generator.generate_map()
         for tile in tiles:
-            pygame.draw.rect(self.screen, (255, 255, 255), (tile.x, tile.y, 1, 1))
+            if tile.tile_type == "floor":
+                pygame.draw.rect(self.screen, (255, 255, 255), (tile.x, tile.y, 1, 1))
+            elif tile.tile_type == "treasure":
+                pygame.draw.rect(self.screen, (0, 255, 0), (tile.x, tile.y, 1, 1))
+            elif tile.tile_type == "boss":
+                pygame.draw.rect(self.screen, (255, 0, 0), (tile.x, tile.y, 1, 1))
 
     def render(self):
         self.screen.fill(settings.BG_COLOR)

@@ -19,12 +19,17 @@ class MapGenerator:
         self.max_room_size = max_room_size
         self.rooms = []
         self.tiles = []
+        self.boss_room = None
+        self.treasure_rooms = []
 
     def generate_map(self):
         self.rooms = []
         self.tiles = []
+        self.boss_room = None
+        self.treasure_rooms = []
         self._bsp_split(0, 0, self.map_width, self.map_height)
         self._create_corridors()
+        self._designate_special_rooms()
         return self.tiles
 
     def _bsp_split(self, x, y, width, height):
@@ -73,3 +78,23 @@ class MapGenerator:
         while y1 != y2:
             y1 += 1 if y1 < y2 else -1
             self.tiles.append(Tile(x1, y1, "floor"))
+
+    def _designate_special_rooms(self):
+        if not self.rooms:
+            return
+
+        # Designate boss room (last room for now)
+        self.boss_room = self.rooms[-1]
+        for tile in self.tiles:
+            if tile.x >= self.boss_room.x and tile.x < self.boss_room.x + self.boss_room.width and tile.y >= self.boss_room.y and tile.y < self.boss_room.y + self.boss_room.height:
+                tile.tile_type = "boss"
+
+        # Designate treasure rooms (random rooms, not the boss room)
+        num_treasure_rooms = min(3, len(self.rooms) - 1)  # Ensure we don't pick the boss room
+        if num_treasure_rooms > 0:
+            treasure_room_candidates = self.rooms[:-1]
+            self.treasure_rooms = random.sample(treasure_room_candidates, num_treasure_rooms)
+            for room in self.treasure_rooms:
+                for tile in self.tiles:
+                    if tile.x >= room.x and tile.x < room.x + room.width and tile.y >= room.y and tile.y < room.y + room.height:
+                        tile.tile_type = "treasure"
