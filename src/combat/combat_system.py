@@ -6,6 +6,8 @@ class CombatSystem:
         self.attack_cooldowns = {}
         self.default_cooldown = 500  # milliseconds
         self.defense = 0 # Default defense
+        self.critical_hit_chance = 0.1 # 10% chance
+        self.critical_hit_multiplier = 2 # Double damage on crit
 
         self.status_effects = {} # Dictionary to store status effects on targets
 
@@ -15,7 +17,10 @@ class CombatSystem:
             print(f"{attacker}'s {attack_type} attack is on cooldown!")
             return False
         else:
-            damage = self.calculate_damage(attack.damage)
+            damage = self.calculate_damage(attack.damage)            
+            if random.random() < self.critical_hit_chance:
+                damage *= self.critical_hit_multiplier
+                print(f"Critical Hit!")
             print(f"{attacker} performs a {attack_type} attack on {target} for {damage} damage!")            
             if status_effect: self.apply_status_effect(target, status_effect)
             self.reset_cooldown(attacker, attack_type)
