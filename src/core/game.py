@@ -1,5 +1,8 @@
 import pygame
 from src.core import settings
+from src.entities.player import Warrior
+from src.map.tile_renderer import TileRenderer
+from src.core.camera import Camera
 
 class Game:
     def __init__(self):
@@ -8,6 +11,10 @@ class Game:
         pygame.display.set_caption(settings.GAME_TITLE)
         self.clock = pygame.time.Clock()
         self.running = True
+        self.player = Warrior(100, 100, 32, 32, 2)
+        self.camera = Camera(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
+        self.tile_renderer = TileRenderer()
+        self.tiles = []
 
     def run(self):
         while self.running:
@@ -21,31 +28,30 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.player.move(-1, 0, self.tiles)
+                if event.key == pygame.K_RIGHT:
+                    self.player.move(1, 0, self.tiles)
+                if event.key == pygame.K_UP:
+                    self.player.move(0, -1, self.tiles)
+                if event.key == pygame.K_DOWN:
+                    self.player.move(0, 1, self.tiles)
 
     def update(self):
-        pass
+        self.camera.update(self.player.x, self.player.y)
 
-    def test_map_generation(self):
+    def generate_map(self):
         from src.map.generator import MapGenerator
         difficulty_level = 1
-        for i in range(3):
-            generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level, 5, 15)
-            tiles = generator.generate_map()
-            for tile in tiles:
-                if tile.tile_type == "floor":
-                    pygame.draw.rect(self.screen, (255, 255, 255), (tile.x, tile.y, 1, 1))
-                elif tile.tile_type == "treasure":
-                    pygame.draw.rect(self.screen, (0, 255, 0), (tile.x, tile.y, 1, 1))
-                elif tile.tile_type == "boss":
-                    pygame.draw.rect(self.screen, (255, 0, 0), (tile.x, tile.y, 1, 1))
-            difficulty_level += 1
-            pygame.display.flip()
-            pygame.time.wait(1000)
-            self.screen.fill(settings.BG_COLOR)
+        generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level, 5, 15)
+        self.tiles = generator.generate_map()
 
     def render(self):
         self.screen.fill(settings.BG_COLOR)
-        self.test_map_generation()
+        self.generate_map()
+        self.tile_renderer.render(self.screen, self.tiles, self.camera)
+        pygame.draw.rect(self.screen, (255, 255, 255), self.camera.apply(self.player.hitbox))
         pygame.display.flip()
 
     def quit(self):

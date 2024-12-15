@@ -16,12 +16,27 @@ class Character:
         self.current_stamina = self.max_stamina
         self.experience = 0
 
-    def move(self, dx, dy):
-        """Moves the character by dx and dy."""
-        self.x += dx * self.speed
-        self.y += dy * self.speed
-        self.hitbox.x = self.x
-        self.hitbox.y = self.y
+    def move(self, dx, dy, tiles):
+        """Moves the character by dx and dy, checking for collisions."""
+        new_x = self.x + dx * self.speed
+        new_y = self.y + dy * self.speed
+        new_hitbox = pygame.Rect(new_x, new_y, self.width, self.height)
+
+        if not self.check_collision(new_hitbox, tiles):
+            self.x = new_x
+            self.y = new_y
+            self.hitbox.x = self.x
+            self.hitbox.y = self.y
+
+    def check_collision(self, rect, tiles):
+        """Checks if the character's rectangle collides with any tile."""
+        for tile in tiles:
+            if tile.type != "floor":
+                continue
+            tile_rect = pygame.Rect(tile.x, tile.y, 1, 1)
+            if rect.colliderect(tile_rect):
+                return False
+        return True
 
     def get_hitbox(self):
         """Returns the character's hitbox."""
