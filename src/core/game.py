@@ -1,8 +1,11 @@
 import pygame
+import pygame
 from src.core import settings
 from src.entities.player import Warrior
+from src.entities.enemy import Enemy
 from src.map.tile_renderer import TileRenderer
 from src.core.camera import Camera
+import random
 
 class Game:
     def __init__(self):
@@ -15,6 +18,7 @@ class Game:
         self.camera = Camera(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         self.tile_renderer = TileRenderer()
         self.tiles = []
+        self.enemies = []
 
     def run(self):
         while self.running:
@@ -32,18 +36,40 @@ class Game:
 
     def update(self):
         self.camera.update(self.player.x, self.player.y)
+        for enemy in self.enemies:
+            enemy.move(self.tiles)
 
     def generate_map(self):
         from src.map.generator import MapGenerator
         difficulty_level = 1
         generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level, 5, 15)
         self.tiles = generator.generate_map()
+        self.enemies = self.create_enemies()
+
+    def create_enemies(self):
+        enemies = []
+        for room in self.get_floor_rooms():
+            if random.random() < 0.5:
+                x = room.center_x * 16
+                y = room.center_y * 16
+                enemy = Enemy(x, y, 32, 32, 1, 50)
+                enemies.append(enemy)
+        return enemies
+
+    def get_floor_rooms(self):
+        floor_rooms = []
+        for room in self.tiles:
+            if room.type == "floor":
+                floor_rooms.append(room)
+        return floor_rooms
 
     def render(self):
         self.screen.fill(settings.BG_COLOR)
         self.generate_map()
         self.tile_renderer.render(self.screen, self.tiles, self.camera)
         pygame.draw.rect(self.screen, (255, 255, 255), self.camera.apply(self.player.hitbox))
+        for enemy in self.enemies:
+            pygame.draw.rect(self.screen, (255, 0, 0), self.camera.apply(enemy.hitbox))
         pygame.display.flip()
 
     def quit(self):
