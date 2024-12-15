@@ -3,6 +3,7 @@ from core import settings
 from entities.player import Warrior
 from entities.enemy import Enemy
 from map.tile_renderer import TileRenderer
+from combat.combat_system import CombatSystem
 from core.camera import Camera
 import random
 
@@ -20,6 +21,7 @@ class Game:
         self.enemies = []
         self.attacks = []
         self.projectiles = []
+        self.combat_system = CombatSystem()
         self.generate_map()
 
     def run(self):
@@ -44,7 +46,7 @@ class Game:
         # Handle player attacks
         attack = self.player.attack()
         if attack:
-            self.attacks.append(attack)
+            self.combat_system.handle_attack(self.player, None, attack, "melee")
 
         # Handle player spells
         projectile = self.player.cast_spell(pygame.mouse.get_pos())
@@ -58,17 +60,17 @@ class Game:
         # Check for attack collisions
         for attack in self.attacks:
             for enemy in self.enemies:
-                if attack.check_collision(enemy.hitbox):
-                    enemy.take_damage(attack.damage)
-                    self.attacks.remove(attack)
+                if attack.check_collision(enemy.hitbox):                    
+                    if self.combat_system.handle_attack(self.player, enemy, attack, "melee"):
+                        self.attacks.remove(attack)
                     break
 
         # Check for projectile collisions
         for projectile in self.projectiles:
             for enemy in self.enemies:
                 if projectile.check_collision(enemy.hitbox):
-                    enemy.take_damage(projectile.damage)
-                    self.projectiles.remove(projectile)
+                    if self.combat_system.handle_attack(self.player, enemy, projectile, "spell"):
+                        self.projectiles.remove(projectile)
                     break
 
         # Remove dead enemies
