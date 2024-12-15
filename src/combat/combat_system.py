@@ -1,4 +1,5 @@
 import pygame
+import random
 from src.combat.status_effect import StatusEffect
 
 class CombatSystem:
