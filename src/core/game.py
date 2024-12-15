@@ -1,10 +1,9 @@
 import pygame
-import pygame
-from src.core import settings
-from src.entities.player import Warrior
-from src.entities.enemy import Enemy
-from src.map.tile_renderer import TileRenderer
-from src.core.camera import Camera
+from core import settings
+from entities.player import Warrior
+from entities.enemy import Enemy
+from map.tile_renderer import TileRenderer
+from core.camera import Camera
 import random
 
 class Game:
@@ -76,7 +75,7 @@ class Game:
         self.enemies = [enemy for enemy in self.enemies if enemy.health > 0]
 
     def generate_map(self):
-        from src.map.generator import MapGenerator
+        from map.generator import MapGenerator
         difficulty_level = 1
         generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level, 5, 15)
         self.tiles = generator.generate_map()
