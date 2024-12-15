@@ -6,14 +6,14 @@ class CombatSystem:
     def __init__(self):
         self.attack_cooldowns = {}
         self.default_cooldown = 500  # milliseconds
-        self.defense = 0 # Default defense
-        self.critical_hit_chance = 0.1 # 10% chance
-        self.dodge_chance = 0.1 # 10% chance
-        self.block_chance = 0.2 # 20% chance
-        self.block_damage_reduction = 0.5 # Reduce damage by 50%
-        self.critical_hit_multiplier = 2 # Double damage on crit
+        self.defense = 0  # Default defense
+        self.critical_hit_chance = 0.1  # 10% chance
+        self.dodge_chance = 0.1  # 10% chance
+        self.block_chance = 0.2  # 20% chance
+        self.block_damage_reduction = 0.5  # Reduce damage by 50%
+        self.critical_hit_multiplier = 2  # Double damage on crit
 
-        self.status_effects = {} # Dictionary to store status effects on targets
+        self.status_effects = {}  # Dictionary to store status effects on targets
 
     def handle_attack(self, attacker, target, attack, attack_type="melee", status_effect=None):
         """Handles attacks, including cooldown checks."""
@@ -34,9 +34,10 @@ class CombatSystem:
             if random.random() < self.critical_hit_chance:
                 damage *= self.critical_hit_multiplier
                 print(f"Critical Hit!")
-            print(f"{attacker} performs a {attack_type} attack on {target} for {damage} damage!")            
+            print(f"{attacker} performs a {attack_type} attack on {target} for {damage} damage!")
 
-            if status_effect: self.apply_status_effect(target, status_effect)
+            if status_effect:
+                self.apply_status_effect(target, status_effect)
             self.reset_cooldown(attacker, attack_type)
             return True
 
@@ -70,7 +71,7 @@ class CombatSystem:
                 elif effect.effect_type == "poison":
                     damage = self.calculate_damage(effect.magnitude)
                     print(f"{target} takes {damage} poison damage.")
-        return damage
+                    target.take_damage(damage)
 
     def is_attack_on_cooldown(self, attacker, attack_type):
         """Checks if an attack is on cooldown."""
