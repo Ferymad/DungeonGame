@@ -4,6 +4,10 @@ from core.settings import PLAYER_HEALTH, PLAYER_SPEED
 
 class Warrior:
     def __init__(self, x, y, width, height, speed):
+        self.attack_cooldown = 500
+        self.spell_cooldown = 1000
+        self.last_attack_time = 0
+        self.last_spell_time = 0
         self.x = x
         self.y = y
         self.width = width
@@ -19,11 +23,13 @@ class Warrior:
                 attack = MeleeAttack(self.x, self.y, 16, 16, 10)
                 self.attacks.append(attack)
             elif event.key == pygame.K_LCTRL:
-                spell = Fireball(self.x, self.y, 16, 16, 20)
-                self.spells.append(spell)
+                self.cast_spell(pygame.mouse.get_pos())
 
     def attack(self):
+        if pygame.time.get_ticks() - self.last_attack_time < self.attack_cooldown:
+            return None
         if self.attacks:
+            self.last_attack_time = pygame.time.get_ticks()
             return self.attacks.pop(0)
         return None
 
@@ -59,4 +65,4 @@ class Warrior:
         for attack in self.attacks:
             attack.update()
         for spell in self.spells:
-            spell.update()
+            pass
