@@ -1,5 +1,6 @@
 import random
 from src.core import settings
+from src.map.tile import Tile
 
 class Room:
     def __init__(self, x, y, width, height):
@@ -7,6 +8,8 @@ class Room:
         self.y = y
         self.width = width
         self.height = height
+        self.center_x = x + width // 2
+        self.center_y = y + height // 2
 
 class MapGenerator:
     def __init__(self, map_width, map_height, min_room_size, max_room_size):
@@ -15,11 +18,14 @@ class MapGenerator:
         self.min_room_size = min_room_size
         self.max_room_size = max_room_size
         self.rooms = []
+        self.tiles = []
 
     def generate_map(self):
         self.rooms = []
+        self.tiles = []
         self._bsp_split(0, 0, self.map_width, self.map_height)
-        return self.rooms
+        self._create_corridors()
+        return self.tiles
 
     def _bsp_split(self, x, y, width, height):
         if width < self.min_room_size or height < self.min_room_size:
@@ -47,3 +53,6 @@ class MapGenerator:
 
         room = Room(room_x, room_y, room_width, room_height)
         self.rooms.append(room)
+        for tile_x in range(room.x, room.x + room.width):
+            for tile_y in range(room.y, room.y + room.height):
+                self.tiles.append(Tile(tile_x, tile_y, "floor"))
