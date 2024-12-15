@@ -21,6 +21,7 @@ class Game:
         self.enemies = []
         self.attacks = []
         self.projectiles = []
+        self.generate_map()
 
     def run(self):
         while self.running:
@@ -100,7 +101,6 @@ class Game:
 
     def render(self):
         self.screen.fill(settings.BG_COLOR)
-        self.generate_map()
         self.tile_renderer.render(self.screen, self.tiles, self.camera)
         pygame.draw.rect(self.screen, (255, 255, 255), self.camera.apply(self.player.hitbox))
         for enemy in self.enemies:
