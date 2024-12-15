@@ -35,3 +35,19 @@ class Warrior(Character):
         if self.current_health < 0:
             self.current_health = 0
         print(f"Warrior took {damage} damage. Current health: {self.current_health}")
+
+
+class Archer(Character):
+    def __init__(self, x, y, width, height, speed):
+        super().__init__(x, y, width, height, speed)
+        self.attack_damage = 8
+        self.defense = 3
+        self.max_health = 80
+        self.current_health = self.max_health
+
+    def take_damage(self, damage):
+        """Reduces the character's health by the damage amount."""
+        self.current_health -= damage
+        if self.current_health < 0:
+            self.current_health = 0
+        print(f"Archer took {damage} damage. Current health: {self.current_health}")
