@@ -15,6 +15,8 @@ class Character:
         self.max_stamina = 100
         self.current_stamina = self.max_stamina
         self.experience = 0
+        self.last_attack_time = 0
+        self.attack_cooldown = 500 # milliseconds
 
     def handle_input(self, event, tiles):
         """Handles keyboard input and updates character position."""
@@ -29,6 +31,8 @@ class Character:
                 dy = -1
             if event.key == pygame.K_DOWN:
                 dy = 1
+            if event.key == pygame.K_SPACE:
+                self.attack()
         self.move(dx, dy, tiles)
 
     def move(self, dx, dy, tiles):
@@ -73,6 +77,18 @@ class Character:
         """Increases the character's experience points."""
         self.experience += amount
         print(f"{self.__class__.__name__} gained {amount} experience. Total experience: {self.experience}")
+
+    def attack(self):
+        """Performs a melee attack."""
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_attack_time > self.attack_cooldown:
+            attack_x = self.x + self.width
+            attack_y = self.y
+            attack_width = 20
+            attack_height = self.height
+            self.last_attack_time = current_time
+            return MeleeAttack(self, attack_x, attack_y, attack_width, attack_height, 10)
+        return None
 
 
 class Warrior(Character):

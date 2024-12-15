@@ -19,6 +19,7 @@ class Game:
         self.tile_renderer = TileRenderer()
         self.tiles = []
         self.enemies = []
+        self.attacks = []
 
     def run(self):
         while self.running:
@@ -38,6 +39,22 @@ class Game:
         self.camera.update(self.player.x, self.player.y)
         for enemy in self.enemies:
             enemy.move(self.tiles)
+
+        # Handle player attacks
+        attack = self.player.attack()
+        if attack:
+            self.attacks.append(attack)
+
+        # Check for attack collisions
+        for attack in self.attacks:
+            for enemy in self.enemies:
+                if attack.check_collision(enemy.hitbox):
+                    enemy.take_damage(attack.damage)
+                    self.attacks.remove(attack)
+                    break
+
+        # Remove dead enemies
+        self.enemies = [enemy for enemy in self.enemies if enemy.health > 0]
 
     def generate_map(self):
         from src.map.generator import MapGenerator
@@ -70,6 +87,8 @@ class Game:
         pygame.draw.rect(self.screen, (255, 255, 255), self.camera.apply(self.player.hitbox))
         for enemy in self.enemies:
             pygame.draw.rect(self.screen, (255, 0, 0), self.camera.apply(enemy.hitbox))
+        for attack in self.attacks:
+            pygame.draw.rect(self.screen, (255, 255, 0), self.camera.apply(attack.hitbox))
         pygame.display.flip()
 
     def quit(self):
