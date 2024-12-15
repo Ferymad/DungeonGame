@@ -1,3 +1,4 @@
+import pygame
 from combat.attack import MeleeAttack
 from combat.spell import Fireball
 from core.settings import PLAYER_HEALTH, PLAYER_SPEED
