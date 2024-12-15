@@ -34,6 +34,8 @@ class Character:
                 dy = 1
             if event.key == pygame.K_SPACE:
                 self.attack()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.cast_spell(event.pos)
         self.move(dx, dy, tiles)
 
     def move(self, dx, dy, tiles):
