@@ -6,7 +6,7 @@ class CombatSystem:
         self.default_cooldown = 500  # milliseconds
         self.defense = 0 # Default defense
 
-    def handle_attack(self, attacker, target, attack_type="melee"):
+    def handle_attack(self, attacker, target, attack, attack_type="melee"):
         """Handles attacks, including cooldown checks."""
         if self.is_attack_on_cooldown(attacker, attack_type):
             print(f"{attacker}'s {attack_type} attack is on cooldown!")
