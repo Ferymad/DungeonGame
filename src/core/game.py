@@ -27,15 +27,21 @@ class Game:
 
     def test_map_generation(self):
         from src.map.generator import MapGenerator
-        generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10)
-        tiles = generator.generate_map()
-        for tile in tiles:
-            if tile.tile_type == "floor":
-                pygame.draw.rect(self.screen, (255, 255, 255), (tile.x, tile.y, 1, 1))
-            elif tile.tile_type == "treasure":
-                pygame.draw.rect(self.screen, (0, 255, 0), (tile.x, tile.y, 1, 1))
-            elif tile.tile_type == "boss":
-                pygame.draw.rect(self.screen, (255, 0, 0), (tile.x, tile.y, 1, 1))
+        difficulty_level = 1
+        for i in range(3):
+            generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level)
+            tiles = generator.generate_map()
+            for tile in tiles:
+                if tile.tile_type == "floor":
+                    pygame.draw.rect(self.screen, (255, 255, 255), (tile.x, tile.y, 1, 1))
+                elif tile.tile_type == "treasure":
+                    pygame.draw.rect(self.screen, (0, 255, 0), (tile.x, tile.y, 1, 1))
+                elif tile.tile_type == "boss":
+                    pygame.draw.rect(self.screen, (255, 0, 0), (tile.x, tile.y, 1, 1))
+            difficulty_level += 1
+            pygame.display.flip()
+            pygame.time.wait(1000)
+            self.screen.fill(settings.BG_COLOR)
 
     def render(self):
         self.screen.fill(settings.BG_COLOR)

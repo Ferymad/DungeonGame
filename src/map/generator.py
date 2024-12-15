@@ -12,11 +12,12 @@ class Room:
         self.center_y = y + height // 2
 
 class MapGenerator:
-    def __init__(self, map_width, map_height, min_room_size, max_room_size):
+    def __init__(self, map_width, map_height, min_room_size, max_room_size, difficulty_level=1):
         self.map_width = map_width
         self.map_height = map_height
         self.min_room_size = min_room_size
         self.max_room_size = max_room_size
+        self.difficulty_level = difficulty_level
         self.rooms = []
         self.tiles = []
         self.boss_room = None
@@ -27,10 +28,14 @@ class MapGenerator:
         self.tiles = []
         self.boss_room = None
         self.treasure_rooms = []
+        self._adjust_difficulty_parameters()
         self._bsp_split(0, 0, self.map_width, self.map_height)
         self._create_corridors()
         self._designate_special_rooms()
-        return self.tiles
+    def _adjust_difficulty_parameters(self):
+        # Adjust map generation parameters based on difficulty level
+        self.min_room_size = max(4, self.min_room_size - self.difficulty_level)
+        self.max_room_size = min(12, self.max_room_size + self.difficulty_level)
 
     def _bsp_split(self, x, y, width, height):
         if width < self.min_room_size or height < self.min_room_size:
