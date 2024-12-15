@@ -12,12 +12,14 @@ class Room:
         self.center_y = y + height // 2
 
 class MapGenerator:
-    def __init__(self, map_width, map_height, min_room_size, max_room_size, difficulty_level=1):
+    def __init__(self, map_width, map_height, min_room_size, max_room_size, difficulty_level=1, min_rooms=5, max_rooms=15):
         self.map_width = map_width
         self.map_height = map_height
         self.min_room_size = min_room_size
         self.max_room_size = max_room_size
         self.difficulty_level = difficulty_level
+        self.min_rooms = min_rooms
+        self.max_rooms = max_rooms
         self.rooms = []
         self.tiles = []
         self.boss_room = None
@@ -30,14 +32,18 @@ class MapGenerator:
         self.treasure_rooms = []
         self._adjust_difficulty_parameters()
         self._bsp_split(0, 0, self.map_width, self.map_height)
+        self._ensure_min_rooms()
         self._create_corridors()
         self._designate_special_rooms()
+        return self.tiles
     def _adjust_difficulty_parameters(self):
         # Adjust map generation parameters based on difficulty level
         self.min_room_size = max(4, self.min_room_size - self.difficulty_level)
         self.max_room_size = min(12, self.max_room_size + self.difficulty_level)
 
     def _bsp_split(self, x, y, width, height):
+        if len(self.rooms) >= self.max_rooms:
+            return
         if width < self.min_room_size or height < self.min_room_size:
             # Create a room if the area is small enough
             self._create_room(x, y, width, height)
@@ -66,6 +72,15 @@ class MapGenerator:
         for tile_x in range(room.x, room.x + room.width):
             for tile_y in range(room.y, room.y + room.height):
                 self.tiles.append(Tile(tile_x, tile_y, "floor"))
+
+    def _ensure_min_rooms(self):
+        while len(self.rooms) < self.min_rooms:
+            # Create a random room
+            x = random.randint(0, self.map_width - self.min_room_size)
+            y = random.randint(0, self.map_height - self.min_room_size)
+            width = random.randint(self.min_room_size, min(self.map_width - x, self.max_room_size))
+            height = random.randint(self.min_room_size, min(self.map_height - y, self.max_room_size))
+            self._create_room(x, y, width, height)
 
     def _create_corridors(self):
         for i in range(len(self.rooms) - 1):

@@ -29,7 +29,7 @@ class Game:
         from src.map.generator import MapGenerator
         difficulty_level = 1
         for i in range(3):
-            generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level)
+            generator = MapGenerator(settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT, 6, 10, difficulty_level, 5, 15)
             tiles = generator.generate_map()
             for tile in tiles:
                 if tile.tile_type == "floor":
